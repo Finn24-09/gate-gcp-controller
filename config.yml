@@ -3,6 +3,14 @@
 config:
   bind: 0.0.0.0:25565
   onlineMode: true
+
+  # Player information forwarding to backend servers
+  # REQUIRED: Configure this for your backend server to accept connections
+  forwarding:
+    mode: legacy # Options: none, legacy, velocity, bungeeguard
+    # For velocity/bungeeguard, add a secret:
+    # secret: "your-secret-key-here"
+
   servers:
     server1: localhost:25566
     server2: localhost:25567
@@ -11,3 +19,32 @@ config:
     - server2
   # Disabling it allows our global-chat plugin to cancel messages.
   forceKeyAuthentication: false
+
+# GCP Controller Plugin Configuration
+# Automatically starts/stops GCP Compute Engine instances based on player activity
+gcpController:
+  # Required: Your GCP project ID
+  projectId: "my-gcp-project"
+
+  # Required: The GCP zone where your instance is located (e.g., us-central1-a, europe-west1-b)
+  zone: "us-central1-a"
+
+  # Required: The name of your GCP Compute Engine instance
+  instanceName: "minecraft-server"
+
+  # Required: The server name from config.servers that corresponds to this GCP instance
+  serverAddress: "server1"
+
+  # Optional: Path to GCP service account credentials JSON file
+  # Leave empty or comment out to use Application Default Credentials (ADC)
+  # ADC works automatically when running on GCP Compute Engine with a service account
+  # credentialsPath: "/credentials/gcp-key.json"
+
+  # Optional: Minutes of inactivity before automatically stopping the server (default: 30)
+  idleTimeoutMinutes: 30
+
+  # Optional: Cooldown period in minutes after starting to prevent duplicate start requests (default: 5)
+  startupThresholdMinutes: 5
+
+  # Optional: Message shown to players when the server is starting
+  startingMessage: "Server is starting up! Please wait 30-60 seconds and try again."

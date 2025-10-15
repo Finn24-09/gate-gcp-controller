@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  gate-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: minecraft-gate-proxy
+    ports:
+      - "25565:25565"
+    volumes:
+      # Mount custom config.yml (edit this file with your GCP settings)
+      - ./config.yml:/config.yml:ro
+      # Mount GCP credentials (OPTIONAL - only needed if not using ADC)
+      # Comment out the line below if running on GCP with a service account
+      # - ${GCP_CREDENTIALS_FILE:-./gcp-key.json}:/credentials/gcp-key.json:ro
+    restart: unless-stopped
+    networks:
+      - minecraft
+
+networks:
+  minecraft:
+    driver: bridge
