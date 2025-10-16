@@ -4,7 +4,7 @@
 
 ## About
 
-This project extends [Minekube Gate](https://github.com/minekube/gate) with a GCP Controller plugin that automatically manages your Minecraft backend servers on Google Cloud Platform. Save up to 75% on compute costs by only running servers when players are online!
+This project extends [Minekube Gate](https://github.com/minekube/gate) with a GCP Controller plugin that automatically manages your Minecraft backend servers on Google Cloud Platform.
 
 ### Features
 
@@ -14,7 +14,7 @@ This project extends [Minekube Gate](https://github.com/minekube/gate) with a GC
 ✨ **Flexible Auth**: Supports both credential files and Application Default Credentials  
 ✨ **Docker Ready**: One-command deployment with Docker Compose  
 ✨ **[Whitelist Plugin](/plugins/whitelist/README.md)**: Restrict server access to authorized players only with runtime-adjustable whitelist  
-✨ **ChatPing Plugin**: Allows players to check their ping with `/ping` command (30s cooldown, color-coded connection health)
+✨ **[ChatPing Plugin](/plugins/chatping/README.md)**: Allows players to check their ping with `/ping` command
 
 ## Quick Start
 
@@ -35,7 +35,7 @@ This project extends [Minekube Gate](https://github.com/minekube/gate) with a GC
 
 2. **Configure [`config.yml`](/config.yml)**
 
-3. **Configure [whitelist file](/whitelist.json) if whitelist is enabled inside the config.yml**
+3. **Configure [`whitelist file`](/whitelist.json) if whitelist is enabled inside the config.yml**
 
 4. **Set up credentials** (if not using ADC):
 
@@ -63,7 +63,7 @@ This project extends [Minekube Gate](https://github.com/minekube/gate) with a GC
 
 2. **Configure [`config.yml`](/config.yml)**
 
-3. **Configure [whitelist file](/whitelist.json) if whitelist is enabled inside the config.yml**
+3. **Configure [`whitelist file`](/whitelist.json) if whitelist is enabled inside the config.yml**
 
 4. **Run:**
    ```bash
