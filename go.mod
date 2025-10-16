@@ -11,7 +11,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	go.minekube.com/brigodier v0.0.2
 	go.minekube.com/common v0.3.0
-	go.minekube.com/gate v0.57.0
+	go.minekube.com/gate v0.57.1
 	google.golang.org/api v0.247.0
 )
 
