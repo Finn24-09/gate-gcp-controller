@@ -1,12 +1,10 @@
 package main
 
 import (
-	"github.com/minekube/gate-plugin-template/plugins/bossbar"
+	"github.com/minekube/gate-plugin-template/plugins/chatping"
 	"github.com/minekube/gate-plugin-template/plugins/gcpcontroller"
 	"github.com/minekube/gate-plugin-template/plugins/globalchat"
-	"github.com/minekube/gate-plugin-template/plugins/ping"
-	"github.com/minekube/gate-plugin-template/plugins/tablist"
-	"github.com/minekube/gate-plugin-template/plugins/titlecmd"
+	"github.com/minekube/gate-plugin-template/plugins/whitelist"
 	"go.minekube.com/gate/cmd/gate"
 	"go.minekube.com/gate/pkg/edition/java/proxy"
 )
@@ -20,12 +18,14 @@ func main() {
 		// but you can also import your own plugins from other repositories.
 		//
 		// Checkout https://github.com/minekube/awesome for some inspiration.
-		gcpcontroller.Plugin, // GCP Controller must be loaded first
-		tablist.Plugin,
-		globalchat.Plugin,
-		bossbar.Plugin,
-		ping.Plugin,
-		titlecmd.Plugin,
+		whitelist.Plugin,     // Whitelist must be loaded first to intercept connections
+		gcpcontroller.Plugin, // GCP Controller loaded after whitelist
+		chatping.Plugin,
+		globalchat.Plugin, // Demo plugin
+		//tablist.Plugin, // Demo plugin
+		// bossbar.Plugin, // Demo plugin
+		// ping.Plugin, // Demo plugin
+		// titlecmd.Plugin, // Demo plugin
 
 		// Add more plugins as you like.
 		// They will be initialized in the same order as appended.

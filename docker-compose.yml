@@ -11,6 +11,8 @@ services:
     volumes:
       # Mount custom config.yml (edit this file with your GCP settings)
       - ./config.yml:/config.yml:ro
+      # Mount whitelist.json for persistence (create with: echo "[]" > whitelist.json)
+      - ./whitelist.json:/whitelist.json
       # Mount GCP credentials (OPTIONAL - only needed if not using ADC)
       # Comment out the line below if running on GCP with a service account
       # - ${GCP_CREDENTIALS_FILE:-./gcp-key.json}:/credentials/gcp-key.json:ro

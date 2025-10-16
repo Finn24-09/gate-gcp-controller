@@ -156,6 +156,11 @@ func loadConfig(_ *proxy.Proxy) (*Config, error) {
 
 // onServerPreConnect handles player connection attempts before they connect to a server
 func (g *gcpController) onServerPreConnect(e *proxy.ServerPreConnectEvent) {
+	// Skip if event already denied by another plugin (e.g., whitelist)
+	if !e.Allowed() {
+		return
+	}
+
 	// Check if this is connecting to our managed server
 	server := e.OriginalServer()
 	if server == nil || server.ServerInfo().Name() != g.config.ServerAddress {

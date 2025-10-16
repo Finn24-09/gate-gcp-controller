@@ -20,6 +20,45 @@ config:
   # Disabling it allows our global-chat plugin to cancel messages.
   forceKeyAuthentication: false
 
+  # Configure the response for server list pings.
+  status:
+    # The message of the day in legacy '§' format or modern text component '{"text":"...", ...}' json.
+    motd: |
+      §bGate Proxy x GCP-Controller
+      §bVisit ➞ §fgithub.com/Finn24-09/gate-gcp-controller
+    # The maximum players shown (is not the actual player limit!).
+    showMaxPlayers: 100
+    # The server image (optimal 64x64); a path of an image file or the base64 data uri.
+    # favicon:
+    # Whether to log ping requests in the console.
+    logPingRequests: false
+    # Whether the proxy should present itself as Forge/FML-compatible server.
+    announceForge: false
+
+  # Whether to register builtin commands on proxy start.
+  # Default: true
+  builtinCommands: true
+  # Whether players require permissions to
+  # execute a builtin proxy command like /server.
+  # Ignore this if `builtinCommands` is set to false.
+  # (This should be set to true in production environments.)
+  # Default: false
+  requireBuiltinCommandPermissions: true
+
+# Whitelist Plugin Configuration
+# Controls which players can connect to the proxy
+whitelist:
+  # Whether the whitelist is enabled
+  enabled: true
+  # Message shown to non-whitelisted players when kicked
+  kickMessage: "You are not whitelisted on this server!"
+  # Path to the whitelist file (uses Minecraft's official format)
+  whitelistFile: "whitelist.json"
+  # List of operator UUIDs who can manage the whitelist
+  # Get your UUID from https://mcuuid.net/ or check server logs when you connect
+  operators:
+    - "069a79f4-44e9-4726-a5be-fca90e38aaf5" # Replace with your UUID
+
 # GCP Controller Plugin Configuration
 # Automatically starts/stops GCP Compute Engine instances based on player activity
 gcpController:
