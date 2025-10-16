@@ -72,12 +72,14 @@ type gcpController struct {
 	client *compute.InstancesClient
 	log    logr.Logger
 
-	mu            sync.RWMutex
-	playerCount   int
-	lastActivity  time.Time
-	lastStartTime time.Time
-	shutdownTimer *time.Timer
-	isStarting    bool
+	mu                        sync.RWMutex
+	playerCount               int
+	lastActivity              time.Time
+	lastStartTime             time.Time
+	shutdownTimer             *time.Timer
+	noJoinSafetyTimer         *time.Timer
+	hasPlayerJoinedSinceStart bool
+	isStarting                bool
 }
 
 // Config holds the GCP controller configuration
@@ -88,6 +90,7 @@ type Config struct {
 	ServerAddress           string
 	IdleTimeoutMinutes      int
 	StartupThresholdMinutes int
+	NoJoinTimeoutMinutes    int
 	StartingMessage         string
 	CredentialsPath         string
 }
@@ -97,6 +100,7 @@ func loadConfig(_ *proxy.Proxy) (*Config, error) {
 	cfg := &Config{
 		IdleTimeoutMinutes:      30,
 		StartupThresholdMinutes: 5,
+		NoJoinTimeoutMinutes:    15,
 		StartingMessage:         "Server is starting up! Please wait 30-60 seconds and try again.",
 	}
 
@@ -132,6 +136,9 @@ func loadConfig(_ *proxy.Proxy) (*Config, error) {
 	}
 	if v.IsSet("gcpController.startupThresholdMinutes") {
 		cfg.StartupThresholdMinutes = v.GetInt("gcpController.startupThresholdMinutes")
+	}
+	if v.IsSet("gcpController.noJoinTimeoutMinutes") {
+		cfg.NoJoinTimeoutMinutes = v.GetInt("gcpController.noJoinTimeoutMinutes")
 	}
 	if v.IsSet("gcpController.startingMessage") {
 		cfg.StartingMessage = v.GetString("gcpController.startingMessage")
@@ -204,6 +211,19 @@ func (g *gcpController) onServerPostConnect(e *proxy.ServerPostConnectEvent) {
 
 	g.playerCount++
 	g.lastActivity = time.Now()
+
+	// Mark that a player has joined since startup (for safety timer)
+	if !g.hasPlayerJoinedSinceStart {
+		g.hasPlayerJoinedSinceStart = true
+
+		// Cancel the no-join safety timer since a player has now joined
+		if g.noJoinSafetyTimer != nil {
+			g.noJoinSafetyTimer.Stop()
+			g.noJoinSafetyTimer = nil
+			g.log.Info("Cancelled no-join safety timer - player successfully joined",
+				"player", e.Player().Username())
+		}
+	}
 
 	// Cancel shutdown timer if it's running
 	if g.shutdownTimer != nil {
@@ -328,8 +348,12 @@ func (g *gcpController) tryStartServer(ctx context.Context) error {
 
 	g.lastStartTime = time.Now()
 	g.isStarting = true
+	g.hasPlayerJoinedSinceStart = false
 
 	g.log.Info("Successfully started GCP instance")
+
+	// Schedule safety timer to shutdown if no one joins
+	g.scheduleNoJoinSafetyShutdown()
 
 	return nil
 }
@@ -363,6 +387,49 @@ func (g *gcpController) scheduleShutdown() {
 	})
 
 	g.log.Info("Scheduled server shutdown",
+		"timeout", timeout,
+		"shutdownAt", time.Now().Add(timeout))
+}
+
+// scheduleNoJoinSafetyShutdown schedules a safety shutdown if no player joins after server startup
+// This prevents unnecessary costs from servers that start but never get actual players
+func (g *gcpController) scheduleNoJoinSafetyShutdown() {
+	// Cancel any existing safety timer
+	if g.noJoinSafetyTimer != nil {
+		g.noJoinSafetyTimer.Stop()
+		g.noJoinSafetyTimer = nil
+	}
+
+	timeout := time.Duration(g.config.NoJoinTimeoutMinutes) * time.Minute
+	g.noJoinSafetyTimer = time.AfterFunc(timeout, func() {
+		g.mu.Lock()
+		defer g.mu.Unlock()
+
+		// Check if any player has joined since startup
+		if g.hasPlayerJoinedSinceStart {
+			g.log.Info("Player has joined since startup, cancelling safety shutdown")
+			g.noJoinSafetyTimer = nil
+			return
+		}
+
+		// No player joined, shutdown the server to save costs
+		g.log.Info("No player joined after server startup, shutting down GCP instance to prevent unnecessary costs",
+			"timeout", timeout,
+			"startTime", g.lastStartTime)
+
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+		defer cancel()
+
+		if err := g.stopServer(ctx); err != nil {
+			g.log.Error(err, "Failed to execute safety shutdown")
+		} else {
+			g.log.Info("Safety shutdown completed successfully")
+		}
+
+		g.noJoinSafetyTimer = nil
+	})
+
+	g.log.Info("Scheduled no-join safety shutdown",
 		"timeout", timeout,
 		"shutdownAt", time.Now().Add(timeout))
 }

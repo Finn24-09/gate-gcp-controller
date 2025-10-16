@@ -12,6 +12,7 @@ This project extends [Minekube Gate](https://github.com/minekube/gate) with a GC
 ✨ **Auto-Shutdown**: Stops the server after configurable idle time (default: 30 minutes)  
 ✨ **Startup Threshold**: Prevents duplicate start requests (default: 5 minute cooldown)  
 ✨ **Flexible Auth**: Supports both credential files and Application Default Credentials  
+✨ **Safety Shutdown**: Shutting down if no one joins after startup
 ✨ **Docker Ready**: One-command deployment with Docker Compose  
 ✨ **[Whitelist Plugin](/plugins/whitelist/README.md)**: Restrict server access to authorized players only with runtime-adjustable whitelist  
 ✨ **[ChatPing Plugin](/plugins/chatping/README.md)**: Allows players to check their ping with `/ping` command

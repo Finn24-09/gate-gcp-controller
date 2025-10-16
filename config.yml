@@ -85,5 +85,11 @@ gcpController:
   # Optional: Cooldown period in minutes after starting to prevent duplicate start requests (default: 5)
   startupThresholdMinutes: 5
 
+  # Optional: Minutes to wait for a player to join after server startup before automatic shutdown (default: 15)
+  # This prevents unnecessary costs when a player triggers the server to start but never actually joins.
+  # If no player connects to the game server within this timeframe after startup, the instance will be
+  # automatically shut down to save costs. Set to 0 to disable this safety feature.
+  noJoinTimeoutMinutes: 15
+
   # Optional: Message shown to players when the server is starting
   startingMessage: "Server is starting up! Please wait 30-60 seconds and try again."
