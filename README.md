@@ -22,7 +22,8 @@ This project extends [Minekube Gate](https://github.com/minekube/gate) with a GC
 ### Prerequisites
 
 - **GCP Account** with a Compute Engine instance running Minecraft
-- **Docker** & Docker Compose (for containerized deployment)
+- **Docker** & Docker Compose V2 (for containerized deployment)
+  - Note: Use `docker compose` (v2) instead of `docker-compose` (v1)
 - **OR** Go 1.20+ (for local development)
 
 ### Option 1: Docker Deployment (Recommended)
@@ -47,8 +48,8 @@ This project extends [Minekube Gate](https://github.com/minekube/gate) with a GC
 
 5. **Deploy:**
    ```bash
-   docker-compose up -d
-   docker-compose logs -f
+   docker compose up -d
+   docker compose logs -f
    ```
 
 ### Option 2: Local Development

@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: minecraft-gate-proxy
+    container_name: gate-gcp-controller
     ports:
       - "25565:25565"
     volumes:
