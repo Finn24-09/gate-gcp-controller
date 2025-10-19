@@ -22,6 +22,11 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
 
 # Move binary into final image
 FROM --platform=$BUILDPLATFORM gcr.io/distroless/static-debian11 AS app
+
+LABEL org.opencontainers.image.source=https://github.com/Finn24-09/gate-gcp-controller
+LABEL org.opencontainers.image.description="This container image extends Minekube Gate with a GCP Controller plugin that automatically manages your Minecraft backend servers on GCP an more. Powered by Minekube Gate"
+LABEL org.opencontainers.image.licenses=MIT
+
 COPY --from=build /workspace/gate /
 
 CMD ["/gate"]

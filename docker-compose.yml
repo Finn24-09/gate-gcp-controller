@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   gate-proxy:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/finn24-09/gate-gcp-controller:latest
     container_name: gate-gcp-controller
     ports:
       - "25565:25565"

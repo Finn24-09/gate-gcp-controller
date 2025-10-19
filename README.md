@@ -28,25 +28,36 @@ This project extends [Minekube Gate](https://github.com/minekube/gate) with a GC
 
 ### Option 1: Docker Deployment (Recommended)
 
-1. **Clone the repository:**
+1. **Prepare a working directory (any path is fine):**
 
    ```bash
-   git clone https://github.com/Finn24-09/gate-gcp-controller.git
-   cd gate-gcp-controller
+   mkdir gate-gcp-controller && cd gate-gcp-controller
    ```
 
-2. **Configure [`config.yml`](/config.yml)**
-
-3. **Configure [`whitelist file`](/whitelist.json) if whitelist is enabled inside the config.yml**
-
-4. **Set up credentials** (if not using ADC):
+2. **Grab the config templates (or create your own):**
 
    ```bash
-   cp .env.example .env
-   # Edit .env and set: GCP_CREDENTIALS_FILE=/path/to/your-key.json
+   curl -L https://raw.githubusercontent.com/Finn24-09/gate-gcp-controller/main/config.yml -o config.yml
+   curl -L https://raw.githubusercontent.com/Finn24-09/gate-gcp-controller/main/whitelist.json -o whitelist.json
    ```
 
-5. **Deploy:**
+   Adjust `config.yml` for your project, and edit `whitelist.json` if you plan to enable the whitelist (defaults to `[]`).
+
+3. **Set up credentials** (skip if using ADC):
+
+   ```bash
+   curl -L https://raw.githubusercontent.com/Finn24-09/gate-gcp-controller/main/.env.example -o .env
+   # Edit .env and set: GCP_CREDENTIALS_FILE=/absolute/path/to/your-key.json
+   ```
+
+4. **Create `docker-compose.yml` using the published image:**
+
+   ```bash
+   curl -L https://raw.githubusercontent.com/Finn24-09/gate-gcp-controller/main/docker-compose.yml -o docker-compose.yml
+   ```
+
+5. **Deploy with Docker Compose:**
+
    ```bash
    docker compose up -d
    docker compose logs -f

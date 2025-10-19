@@ -9,7 +9,8 @@ config:
   forwarding:
     mode: legacy # Options: none, legacy, velocity, bungeeguard
     # For velocity/bungeeguard, add a secret:
-    # secret: "your-secret-key-here"
+    # velocitySecret: your-secret-key-here
+    # bungeeGuardSecret: secret_here
 
   servers:
     server1: localhost:25566
